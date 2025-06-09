@@ -8,7 +8,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        escolaId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        }
     });
+
 
     return Professor;
 };
