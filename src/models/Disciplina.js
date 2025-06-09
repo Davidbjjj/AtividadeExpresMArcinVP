@@ -9,13 +9,27 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    // Campos temporários (serão substituídos por associações depois)
-    professorId: DataTypes.UUID,
-    escolaId: DataTypes.UUID
+    professorId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'Professors',
+        key: 'id'
+      }
+    },
+    escolaId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'Escolas',
+        key: 'id'
+      }
+    }
   });
 
-  // Associações serão implementadas depois
-  Disciplina.associate = () => {};
+  Disciplina.associate = models => {
+    Disciplina.belongsTo(models.Professor, { foreignKey: 'professorId' });
+    Disciplina.belongsTo(models.Escola, { foreignKey: 'escolaId' });
+    Disciplina.belongsToMany(models.Aluno, { through: 'AlunoDisciplina' });
+  };
 
   return Disciplina;
 };
