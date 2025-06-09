@@ -1,11 +1,19 @@
+const Sequelize = require('sequelize');
 const sequelize = require('../config/database');
-const Disciplina = require('./Disciplina')(sequelize, require('sequelize').DataTypes);
+
+const Disciplina = require('./Disciplina')(sequelize, Sequelize.DataTypes);
+const Evento = require('./Evento')(sequelize, Sequelize.DataTypes);
+
+const models = {
+  Disciplina,
+  Evento,
+};
+
+Object.values(models)
+  .filter(model => typeof model.associate === 'function')
+  .forEach(model => model.associate(models));
 
 module.exports = {
   sequelize,
-  Disciplina,
-  // Outros modelos serão adicionados depois
-  Professor: null,
-  Aluno: null,
-  Escola: null
+  ...models,
 };

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// Importe as rotas corretamente
 const disciplinaRoutes = require('./disciplinaRoutes');
+const eventoRoutes = require('./eventoRoutes'); 
 
-// Use as rotas
 router.use('/disciplinas', disciplinaRoutes);
+router.use('/eventos', eventoRoutes); 
 
 module.exports = router;
