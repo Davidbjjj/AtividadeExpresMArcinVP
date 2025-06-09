@@ -1,12 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send('Página inicial');
-});
+// Importe as rotas corretamente
+const disciplinaRoutes = require('./disciplinaRoutes');
 
-router.get('/sobre', (req, res) => {
-  res.send('Página sobre');
-});
+// Use as rotas
+router.use('/disciplinas', disciplinaRoutes);
 
 module.exports = router;
