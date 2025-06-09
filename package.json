@@ -10,7 +10,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "express": "^5.1.0",
     "sequelize": "^6.37.7",
@@ -18,5 +17,14 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Davidbjjj/AtividadeExpresMArcinVP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Davidbjjj/AtividadeExpresMArcinVP/issues"
+  },
+  "homepage": "https://github.com/Davidbjjj/AtividadeExpresMArcinVP#readme",
+  "description": ""
 }

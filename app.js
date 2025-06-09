@@ -1,18 +1,29 @@
 const express = require('express');
-const { sequelize } = require('./src/models');
+const { sequelize, Professor, Disciplina } = require('./src/models');
 const app = express();
-
-// Sincronizar banco de dados
-sequelize.sync()
-  .then(() => console.log('Banco de dados conectado'))
-  .catch(err => console.error('Erro ao conectar ao banco:', err));
 
 app.use(express.json());
 
 const disciplinaRoutes = require('./src/routes/disciplinaRoutes');
-app.use('/disciplinas', disciplinaRoutes);
+const professorRoutes = require('./src/routes/professorRoutes');
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+app.use('/disciplinas', disciplinaRoutes);
+app.use('/professores', professorRoutes);
+
+// Sincronizar banco de dados e adicionar dados iniciais
+sequelize.sync({ force: true }).then(async () => {
+  console.log('Banco de dados conectado');
+
+  // Pré-cadastrar Professores
+  const prof1 = await Professor.create({ nome: 'João Silva', area: 'Matemática' });
+  const prof2 = await Professor.create({ nome: 'Maria Souza', area: 'História' });
+
+  // Pré-cadastrar Disciplinas relacionadas
+  await Disciplina.create({ nome: 'Cálculo I', cargaHoraria: 60, professorId: prof1.id });
+  await Disciplina.create({ nome: 'História Geral', cargaHoraria: 40, professorId: prof2.id });
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+  });
+}).catch(err => console.error('Erro ao conectar ao banco:', err));
