@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { Aluno } = require('../models'); // <-- Import do model Aluno
+const { Aluno } = require('../models/Aluno'); // <-- Import do model Aluno
 
 exports.criarAluno = async (alunoData) => {
   const { nome, email, senha } = alunoData;

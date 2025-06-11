@@ -1,40 +1,36 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   const Professor = sequelize.define('Professor', {
     id: {
       type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
-    },
-    professorId: {
-      type: DataTypes.UUID,
-      references: {
-        model: 'Professors',
-        key: 'id'
-      },
-      allowNull: true
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
     },
     nome: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    area: {
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false
+    },
+    senha: {
       type: DataTypes.STRING,
       allowNull: false
     },
     escolaId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       references: {
         model: 'Escolas',
         key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      }
     }
   });
+
+  Professor.associate = (models) => {
+    Professor.belongsTo(models.Escola, { foreignKey: 'escolaId' });
+    Professor.hasMany(models.Disciplina, { foreignKey: 'professorId' });
+  };
 
   return Professor;
 };

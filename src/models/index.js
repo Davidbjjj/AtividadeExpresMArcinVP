@@ -1,36 +1,31 @@
 const sequelize = require('../config/database');
 const { DataTypes } = require('sequelize');
 
-// Modelos
-const Aluno = require('./Aluno')(sequelize, DataTypes);
-const Disciplina = require('./Disciplina')(sequelize, DataTypes);
-const Professor = require('./Professor')(sequelize, DataTypes);
-const Escola = require('./Escola')(sequelize, DataTypes);
+// Inicializa o objeto que conterá os modelos
+const db = {};
 
-// Objeto contendo todos os modelos
-const models = { Aluno, Disciplina, Professor, Escola };
+// Criação dos modelos
+db.Aluno = require('./Aluno')(sequelize, DataTypes);
+db.Disciplina = require('./Disciplina')(sequelize, DataTypes);
+db.Professor = require('./Professor')(sequelize, DataTypes);
+db.Escola = require('./Escola')(sequelize, DataTypes);
 
-// Associações
-if (Aluno.associate) Aluno.associate(models);
-if (Disciplina.associate) Disciplina.associate(models);
+// Associações se existirem nos próprios modelos
+if (db.Aluno.associate) db.Aluno.associate(db);
+if (db.Disciplina.associate) db.Disciplina.associate(db);
 
-// Relação 1: Escola 1 → N Professores
-Escola.hasMany(Professor, { as: 'professores', foreignKey: 'escolaId' });
-Professor.belongsTo(Escola, { foreignKey: 'escolaId' });
+// Relações diretas
+db.Escola.hasMany(db.Professor, { as: 'professores', foreignKey: 'escolaId' });
+db.Professor.belongsTo(db.Escola, { foreignKey: 'escolaId' });
 
-// Relação 2: Escola 1 → N Disciplinas
-Escola.hasMany(Disciplina, { as: 'disciplinas', foreignKey: 'escolaId' });
-Disciplina.belongsTo(Escola, { foreignKey: 'escolaId' });
+db.Escola.hasMany(db.Disciplina, { as: 'disciplinas', foreignKey: 'escolaId' });
+db.Disciplina.belongsTo(db.Escola, { foreignKey: 'escolaId' });
 
-// Relação 3: Professor 1 → N Disciplinas
-Professor.hasMany(Disciplina, { as: 'disciplinas', foreignKey: 'professorId' });
-Disciplina.belongsTo(Professor, { foreignKey: 'professorId' });
+db.Professor.hasMany(db.Disciplina, { as: 'disciplinas', foreignKey: 'professorId' });
+db.Disciplina.belongsTo(db.Professor, { foreignKey: 'professorId' });
 
-module.exports = {
-  sequelize,
-  Sequelize: { DataTypes },
-  Aluno,
-  Disciplina,
-  Professor,
-  Escola
-};
+// Exporta tudo
+db.sequelize = sequelize;
+db.Sequelize = { DataTypes };
+
+module.exports = db;
