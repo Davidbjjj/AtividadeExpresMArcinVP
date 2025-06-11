@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const AlunoController = require('../controllers/AlunoController');
+const AlunoController = require('../controllers/alunoController');
 
 router.get('/', AlunoController.listarTodos);
 router.post('/', AlunoController.criar);
