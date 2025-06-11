@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const alunoController = require('../controllers/alunoController');
+const AlunoController = require('../controllers/AlunoController');
 
-router.post('/', alunoController.criarAluno);
-router.get('/', alunoController.listar);
-router.get('/:id', alunoController.buscar);
-router.put('/:id', alunoController.atualizar);
-router.delete('/:id', alunoController.deletar);
+router.get('/', AlunoController.listarTodos);
+router.post('/', AlunoController.criar);
+router.get('/:id', AlunoController.buscarAluno);
+router.put('/:id', AlunoController.atualizarAluno);
+router.delete('/:id', AlunoController.deletarAluno);
+
+// Rota para restaurar aluno (soft delete)
+router.post('/:id/restaurar', AlunoController.restaurarAluno);
 
 module.exports = router;
