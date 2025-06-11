@@ -3,34 +3,46 @@ module.exports = (sequelize, DataTypes) => {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      primaryKey: true,
+      allowNull: false
     },
     nome: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: "Nome é obrigatório"
+        }
+      }
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        isEmail: {
+          msg: "E-mail inválido"
+        }
+      }
     },
     senha: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    notas: {
-      type: DataTypes.ARRAY(DataTypes.DOUBLE),
-      defaultValue: []
+      allowNull: false,
+      validate: {
+        len: {
+          args: [6, 100],
+          msg: "Senha deve ter entre 6 e 100 caracteres"
+        }
+      }
+    }
+  }, {
+    paranoid: true,
+    defaultScope: {
+      attributes: {
+        exclude: ['senha']
+      }
     }
   });
-
-  Aluno.associate = (models) => {
-    Aluno.belongsToMany(models.Disciplina, {
-      through: 'AlunoDisciplinas',
-      foreignKey: 'alunoId',
-      otherKey: 'disciplinaId'
-    });
-  };
 
   return Aluno;
 };
