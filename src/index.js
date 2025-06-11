@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { sequelize, Aluno, Professor, Disciplina, Escola } = require('./src/models');
+const { sequelize, Aluno, Professor, Disciplina, Escola } = require('./models');
 const app = express();
 
 app.use(express.json());
@@ -11,10 +11,10 @@ sequelize.authenticate()
   .catch((err) => console.error('❌ Erro ao conectar:', err));
 
 // Rotas
-const alunoRoutes = require('./src/routes/alunoRoutes');
-const disciplinaRoutes = require('./src/routes/disciplinaRoutes');
-const professorRoutes = require('./src/routes/professorRoutes');
-const escolaRoutes = require('./src/routes/escolaRoutes');
+const alunoRoutes = require('./routes/alunoRoutes');
+const disciplinaRoutes = require('./routes/disciplinaRoutes');
+const professorRoutes = require('./routes/professorRoutes');
+const escolaRoutes = require('./routes/escolaRoutes');
 
 app.use('/alunos', alunoRoutes);
 app.use('/disciplinas', disciplinaRoutes);
