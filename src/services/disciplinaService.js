@@ -1,30 +1,30 @@
 const { Disciplina, Professor, Aluno, Escola } = require('../models');
 
-// exports.criarDisciplina = async (dto) => {
-//   const professor = await Professor.findOne({ where: { email: dto.professorEmail } });
-//   if (!professor) throw new Error('Professor não encontrado');
+exports.criarDisciplina = async (dto) => {
+  const professor = await Professor.findOne({ where: { email: dto.professorEmail } });
+  if (!professor) throw new Error('Professor não encontrado');
 
-//   const escola = await Escola.findOne({ where: { nome: dto.escola } });
-//   if (!escola) throw new Error('Escola não encontrada');
+  const escola = await Escola.findOne({ where: { nome: dto.escola } });
+  if (!escola) throw new Error('Escola não encontrada');
 
-//   if (professor.escolaId !== escola.id) {
-//     throw new Error('O professor não pertence à escola informada');
-//   }
+  if (professor.escolaId !== escola.id) {
+    throw new Error('O professor não pertence à escola informada');
+  }
 
-//   const disciplina = await Disciplina.create({
-//     nome: dto.nome,
-//     professorId: professor.id,
-//     escolaId: escola.id
-//   });
+  const disciplina = await Disciplina.create({
+    nome: dto.nome,
+    professorId: professor.id,
+    escolaId: escola.id
+  });
 
-//   return {
-//     id: disciplina.id,
-//     nome: disciplina.nome,
-//     professorNome: professor.nome,
-//     professorEmail: professor.email,
-//     escola: escola.nome
-//   };
-// };
+  return {
+    id: disciplina.id,
+    nome: disciplina.nome,
+    professorNome: professor.nome,
+    professorEmail: professor.email,
+    escola: escola.nome
+  };
+};
 
 exports.criarDisciplina = async (dto) => {
   const disciplina = await Disciplina.create({
@@ -42,15 +42,16 @@ exports.criarDisciplina = async (dto) => {
   };
 };
 
-// exports.listarTodas = async () => {
-//   return await Disciplina.findAll({
-//     include: [
-//       { models: Professor, attributes: ['nome', 'email'] },
-//       { models: Escola, attributes: ['nome'] }
-//     ]
-//   });
-// };
-// Implemente apenas os métodos essenciais
+exports.listarTodas = async () => {
+  return await Disciplina.findAll({
+    include: [
+      { models: Professor, attributes: ['nome', 'email'] },
+      { models: Escola, attributes: ['nome'] }
+    ]
+  });
+};
+
+
 exports.listarTodas = async () => {
   return await Disciplina.findAll();
 };
@@ -61,17 +62,17 @@ exports.buscarPorId = async (id) => {
   return disciplina;
 };
 
-// exports.buscarPorId = async (id) => {
-//   const disciplina = await Disciplina.findByPk(id, {
-//     include: [
-//       { models: Professor, attributes: ['nome', 'email'] },
-//       { models: Escola, attributes: ['nome'] },
-//       { models: Aluno, attributes: ['id', 'nome', 'email'] }
-//     ]
-//   });
-//   if (!disciplina) throw new Error('Disciplina não encontrada');
-//   return disciplina;
-// };
+exports.buscarPorId = async (id) => {
+  const disciplina = await Disciplina.findByPk(id, {
+    include: [
+      { models: Professor, attributes: ['nome', 'email'] },
+      { models: Escola, attributes: ['nome'] },
+      { models: Aluno, attributes: ['id', 'nome', 'email'] }
+    ]
+  });
+  if (!disciplina) throw new Error('Disciplina não encontrada');
+  return disciplina;
+};
 
 exports.atualizarDisciplina = async (id, dto) => {
   const disciplina = await Disciplina.findByPk(id);
