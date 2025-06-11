@@ -22,7 +22,7 @@ app.use('/professores', professorRoutes);
 app.use('/escolas', escolaRoutes);
 
 // Sincronizar banco de dados e adicionar dados iniciais
-sequelize.sync({ force: true }).then(async () => {
+sequelize.sync().then(async () => {
   console.log('Banco de dados conectado e sincronizado');
 
   // Criar escolas primeiro
