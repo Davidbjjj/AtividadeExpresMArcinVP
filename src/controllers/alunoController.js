@@ -1,4 +1,4 @@
-const AlunoService = require('../services/AlunoService');
+const AlunoService = require('../services/alunoService');
 const { Aluno } = require('../models');
 
 // Instância do service (minúsculo para consistência)
