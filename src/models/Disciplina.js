@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
   Disciplina.associate = models => {
     Disciplina.belongsTo(models.Professor, { foreignKey: 'professorId' });
     Disciplina.belongsTo(models.Escola, { foreignKey: 'escolaId' });
-    Disciplina.belongsToMany(models.Aluno, { through: 'AlunoDisciplina' });
+    Disciplina.belongsToMany(models.Aluno, { through: 'AlunoDisciplinas' });
   };
 
   return Disciplina;

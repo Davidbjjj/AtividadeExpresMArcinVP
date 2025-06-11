@@ -1,21 +1,21 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   const Escola = sequelize.define('Escola', {
     id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
+      primaryKey: true
     },
     nome: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false
-    },
-    endereco: {
-      type: DataTypes.STRING
     }
   });
+
+  Escola.associate = (models) => {
+    Escola.hasMany(models.Professor, { foreignKey: 'escolaId' });
+    Escola.hasMany(models.Disciplina, { foreignKey: 'escolaId' });
+  };
 
   return Escola;
 };

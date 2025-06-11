@@ -1,12 +1,23 @@
-const { Disciplina, Professor, Aluno, Escola } = require('../models');
+const { Disciplina, Professor, Escola, Aluno } = require('../models');
 
 exports.criarDisciplina = async (dto) => {
-  const professor = await Professor.findOne({ where: { email: dto.professorEmail } });
-  if (!professor) throw new Error('Professor não encontrado');
+  // Verifica se professorId é um UUID válido
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(dto.professorId)) {
+    throw new Error('ID do professor em formato inválido (deve ser UUID v4)');
+  }
+
+  const professor = await Professor.findOne({
+    where: { id: dto.professorId }
+  });
+  
+  if (!professor) {
+    throw new Error(`Professor com ID ${dto.professorId} não encontrado`);
+  }
 
   const escola = await Escola.findOne({ where: { nome: dto.escola } });
   if (!escola) throw new Error('Escola não encontrada');
 
+  // Verifica se o professor pertence à escola
   if (professor.escolaId !== escola.id) {
     throw new Error('O professor não pertence à escola informada');
   }
@@ -26,51 +37,32 @@ exports.criarDisciplina = async (dto) => {
   };
 };
 
-exports.criarDisciplina = async (dto) => {
-  const disciplina = await Disciplina.create({
-    nome: dto.nome,
-    professorId: '00000000-0000-0000-0000-000000000000', // Temporário
-    escolaId: '00000000-0000-0000-0000-000000000000'   // Temporário
-  });
-
-  return {
-    id: disciplina.id,
-    nome: disciplina.nome,
-    professorNome: 'Professor Temporário', // Temporário
-    professorEmail: 'prof@temp.com',      // Temporário
-    escola: 'Escola Temporária'           // Temporário
-  };
-};
-
 exports.listarTodas = async () => {
   return await Disciplina.findAll({
     include: [
-      { models: Professor, attributes: ['nome', 'email'] },
-      { models: Escola, attributes: ['nome'] }
-    ]
+  { model: Professor, attributes: ['nome', 'email'] },
+  { model: Escola, attributes: ['nome'] }
+]
+
   });
 };
 
-
-exports.listarTodas = async () => {
-  return await Disciplina.findAll();
-};
-
 exports.buscarPorId = async (id) => {
-  const disciplina = await Disciplina.findByPk(id);
-  if (!disciplina) throw new Error('Disciplina não encontrada');
-  return disciplina;
-};
-
-exports.buscarPorId = async (id) => {
-  const disciplina = await Disciplina.findByPk(id, {
+  console.log('Buscando disciplina com ID:', id); // Log para debug
+  
+  const disciplina = await Disciplina.findOne({
+    where: { id: id },
     include: [
-      { models: Professor, attributes: ['nome', 'email'] },
-      { models: Escola, attributes: ['nome'] },
-      { models: Aluno, attributes: ['id', 'nome', 'email'] }
+      { model: Professor, attributes: ['id', 'nome', 'email'] },
+      { model: Escola, attributes: ['id', 'nome'] },
+      { model: Aluno, attributes: ['id', 'nome', 'email'] }
     ]
   });
-  if (!disciplina) throw new Error('Disciplina não encontrada');
+  
+  if (!disciplina) {
+    throw new Error(`Disciplina com ID ${id} não encontrada`);
+  }
+  
   return disciplina;
 };
 
@@ -118,7 +110,7 @@ exports.desmatricularAluno = async (disciplinaId, alunoId) => {
 
 exports.listarAlunos = async (disciplinaId) => {
   const disciplina = await Disciplina.findByPk(disciplinaId, {
-    include: { models: Aluno, attributes: ['id', 'nome', 'email'] }
+    include: { model: Aluno, attributes: ['id', 'nome', 'email'] }
   });
   if (!disciplina) throw new Error('Disciplina não encontrada');
   return disciplina.alunos;
@@ -143,25 +135,21 @@ exports.listarPorNomeEscola = async (nomeEscola) => {
   return await Disciplina.findAll({
     where: { escolaId: escola.id },
     include: [
-      { models: Professor, attributes: ['nome', 'email'] },
-      { models: Escola, attributes: ['nome'] }
-    ]
+  { model: Professor, attributes: ['nome', 'email'] },
+  { model: Escola, attributes: ['nome'] }
+]
+
   });
 };
 
-exports.associarProfessor = async (nomeDisciplina, emailProfessor) => {
-  const disciplina = await Disciplina.findOne({ where: { nome: nomeDisciplina } });
+exports.associarProfessorPorId = async (disciplinaId, professorId) => {
+  const disciplina = await Disciplina.findByPk(disciplinaId);
   if (!disciplina) throw new Error('Disciplina não encontrada');
 
-  const professor = await Professor.findOne({ where: { email: emailProfessor } });
+  const professor = await Professor.findByPk(professorId);
   if (!professor) throw new Error('Professor não encontrado');
 
-  if (disciplina.escolaId !== professor.escolaId) {
-    throw new Error('Professor não pertence à mesma escola da disciplina');
-  }
+  await disciplina.setProfessor(professor); // ou disciplina.professorId = professorId
 
-  disciplina.professorId = professor.id;
-  await disciplina.save();
-
-  return await this.buscarPorId(disciplina.id);
+  return { mensagem: 'Professor associado com sucesso!' };
 };
