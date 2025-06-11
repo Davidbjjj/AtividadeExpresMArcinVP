@@ -7,6 +7,21 @@ class AlunoService {
   }
 
   async criarAluno(alunoData) {
+    
+     const alunoExistente = await this.Aluno.findOne({
+      where: { email: alunoData.email }
+    });
+
+    if (alunoExistente) {
+      return { 
+        success: false, 
+        error: 'E-mail já cadastrado',
+        details: ['O e-mail fornecido já está em uso por outro aluno'],
+        status: 409 // Conflict
+      };
+    }
+
+    
     try {
       if (alunoData.senha) {
         const saltRounds = 10;
