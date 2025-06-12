@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 app.use(express.json());
+require('dotenv').config();
 
 const { sequelize, Aluno, Professor, Disciplina, Escola } = require('./models');
 const bcrypt = require('bcrypt');
@@ -106,4 +107,8 @@ sequelize.sync({ force: true }).then(async () => {
 
 }).catch(err => {
   console.error('❌ Erro ao sincronizar o banco:', err);
+});
+
+app.get('/', (req, res) => {
+  res.send('API rodando! 🚀');
 });
